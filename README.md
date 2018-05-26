@@ -14,7 +14,7 @@ for(let i = 0; i < length; ++i) pool[i] = {foo:0,bar:1,index:i}
 const pool = valloc(innerPool)
 // get information about the pool
 pool.length // 100
-pool.free // 100
+pool.available // 100
 pool.used // 0
 
 // allocate an object
@@ -26,14 +26,14 @@ let second = pool.next() // => {foo:0,bar:1,index:1}
 pool.indexOf(second) // 1
 pool.nextIndex // 2
 pool.length // 100
-pool.free // 98 
+pool.available // 98 
 pool.used // 2
 
 // free an object
 pool.free(first)
 pool.nextIndex // 0
 pool.length // 100
-pool.free // 99 
+pool.available // 99 
 pool.used // 1
 
 // allocate another object, reusing the freed object
@@ -41,7 +41,7 @@ let third = pool.next() // {foo:0,bar:1,index:0}
 pool.indexOf(third) // 0
 pool.nextIndex // 2
 pool.length // 100
-pool.free // 98 
+pool.available // 98 
 pool.used // 2
 ```
 
