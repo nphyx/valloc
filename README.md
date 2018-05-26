@@ -5,7 +5,7 @@ A utility for tracking allocation/use of items in an array. It uses an internall
 Valloc is useful when you have a set of reusable variables or indexes, like an object pool or other array, and you want to keep track of which indexes are currently in use, which are free, and how many free members remain.
 
 Basic Usage Examples
-====================
+--------------------
 ```js
 // create a pool and set up a valloc allocator
 const length = 100
@@ -46,7 +46,7 @@ pool.used // 2
 ```
 
 Advanced Usage
-==============
+--------------
 You can supply factory, init, and clean functions to automate tasks related to valloc
 ```js
 const config = {
@@ -82,5 +82,5 @@ pool.isIndexAllocated(1) // false
 ```
 
 License
-=======
+-------
 MIT
