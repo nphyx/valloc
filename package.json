@@ -1,11 +1,11 @@
 {
   "name": "@nphyx/valloc",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "a simple pool manager",
   "main": "index.js",
   "scripts": {
     "lint": "eslint src/ test/",
-    "test": "npm run lint && nyc --reporter=text mocha --bail --require should --require babel-register --reporter=spec test/util.test.js test/index.test.js",
+    "test": "npm run lint && nyc --reporter=text mocha --bail --require should --require babel-register --reporter=spec test/util.test.js test/index.test.js test/valloc.test.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "coverage-report": "nyc report --reporter=html"
   },

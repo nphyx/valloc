@@ -18,10 +18,9 @@ Installation
 npm install --save @nphyx/valloc
 ```
 
-Valloc is an ES6 module. You need to import from src for now - webpack builds
-will be included later.
+Valloc is an ES6 module. Webpack builds will be included in a later version. 
 ```javascript
-import valloc from "@nphyx/valloc/src/"
+import valloc from "@nphyx/valloc"
 ```
 
 Basic Usage Examples

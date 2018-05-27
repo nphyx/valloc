@@ -87,3 +87,14 @@ export function nextIndex(allocator) {
   for (let i = 0, len = allocator.length; i < len; ++i) {if (!allocator[i]) {return i}}
   return -1
 }
+
+/**
+ * perform a callback on each active item
+ */
+export function eachActive(pool, allocator, cb) {
+  allocator.forEach((active, i) => {
+    if (active) {
+      cb(pool[i], i)
+    }
+  })
+}

@@ -110,6 +110,19 @@ describe("valloc allocators", () => {
     allocator.used.should.eql(count)
     allocator.available.should.eql(length - count)
   })
+  it("should iterate over active members with eachActive", () => {
+    allocator.next()
+    allocator.next()
+    allocator.next()
+    count += 3
+    let callCount = 0
+    allocator.eachActive((member, i) => {
+      member.index.should.eql(i)
+      allocator.isIndexAllocated(i).should.be.true()
+      callCount++
+    })
+    callCount.should.eql(count)
+  })
   it("should supply default factory, init and clean functions", () => {
     // this would throw if there was no default factory
     let allocator = valloc.create(10)

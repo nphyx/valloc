@@ -132,6 +132,35 @@ describe("utl.freeIndex", () => {
   })
 })
 
+describe("util.eachActive", () => {
+  let pool, allocator, clean, count, length
+  before(() => {
+    length = 10
+    count = length
+    pool = new Array(length)
+    allocator = new Array(length)
+    allocator.fill(true)
+    clean = (m) => m.foo = "baz"
+    for (let i = 0; i < length; ++i) {
+      pool[i] = {foo: "bar"}
+    }
+  })
+  it("calls the callback only for each active item", () => {
+    util.freeIndex(pool, allocator, clean, 0)
+    util.freeIndex(pool, allocator, clean, 2)
+    util.freeIndex(pool, allocator, clean, 5)
+    let called = []
+    util.eachActive(pool, allocator, (member, i) => {
+      member.foo.should.eql("bar")
+      called.push(i)
+    })
+    called.length.should.eql(7)
+    called.indexOf(0).should.eql(-1)
+    called.indexOf(2).should.eql(-1)
+    called.indexOf(5).should.eql(-1)
+  })
+})
+
 describe("utl.free", () => {
   let pool, allocator, clean, count, length
   before(() => {
@@ -196,5 +225,4 @@ describe("util.isIndexAllocated", () => {
     (() => util.isIndexAllocated(allocator, 2)).should.throw()
   })
 })
-
 

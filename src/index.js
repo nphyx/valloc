@@ -1,4 +1,4 @@
-import {nextIndex, allocate, free, freeIndex, isAllocated, isIndexAllocated} from "./util"
+import {nextIndex, allocate, free, freeIndex, isAllocated, isIndexAllocated, eachActive} from "./util"
 const defaultCreateOpts = {
   factory: () => ({}),
   init: () => {},
@@ -20,6 +20,9 @@ function vallocFactory(pool, init, clean) {
     indexOf: {value: (member) => pool.indexOf(member)},
     isAllocated: {value: isAllocated.bind(undefined, pool, allocator)},
     isIndexAllocated: {value: isIndexAllocated.bind(undefined, allocator)},
+    eachActive: {value: (cb) => {
+      eachActive(pool, allocator, cb)
+    }},
     free: {value: (member) => {
       free(pool, allocator, clean, member)
       used--
