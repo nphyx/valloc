@@ -58,19 +58,24 @@ pool.indexOf(third) // 0
 
 Advanced Usage
 --------------
-You can supply factory, init, and clean functions to automate basic tasks 
-while allocation and freeing objects.
+You can supply a factory to automate instantiation of the pool, as well as 
+init and clean callbacks to automate these tasks when allocating and freeing 
+objects.
 
 ```js
 const config = {
-	factory: () => ({foo:undefined, bar:undefined})
-	init: (entry, foo, bar) => {
-		member.foo = foo
-		member.bar = bar
+  // factory receives the index of the object to be created
+	factory: (index) => ({foo:undefined, bar:undefined, index})
+  // init receives the object to be allocated, along with any parameters you
+  // supply when calling pool.next()
+	init: (object, foo, bar) => {
+		object.foo = foo
+		object.bar = bar
 	},
-  clean: (entry) => {
-	 entry.foo = undefined
-	 entry.bar = undefined
+  // clean receives the object to be freed
+  clean: (object) => {
+	 object.foo = undefined
+	 object.bar = undefined
 	}
 }
 
@@ -83,6 +88,7 @@ const second = pool.next(2, 2) // {foo:2, bar:2, index:1}
 
 // valloc will run the 'clean' function on the object during deallocation
 pool.free(second)
+
 // clean will have been called (NOTE: you should not use objects after freeing them!)
 second // {foo:undefined, bar:undefined, index:1}
 
@@ -97,17 +103,8 @@ Freeing and checking allocation of objects is relatively expensive because it
 has to find the index of an object. Use the index versions of valloc functions
 for faster, more predictable performance.
 ```js
-const pool = valloc.create(100, { factory: () => ({foo:0}) })
-
-let objIndex = nextIndex()
-let obj = allocate()
-/* ... do stuff with obj ... */
-freeIndex(objIndex)
-isIndexAllocated(objIndex) // false
-```
-
-Indexes are also provided to the factory function for your convenience.
-```js
+// the factory function gets the index of the object, so you can store it on
+// for easy access
 const pool = valloc.create(100, { factory: (index) => ({poolIndex: index}) })
 const {allocate, freeIndex} = pool
 let obj1 = allocate()
