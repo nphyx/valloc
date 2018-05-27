@@ -3,19 +3,56 @@
  */
 
 /**
- * allocate (stub)
+ * allocate a free member by index
  * @private
  */
-export function allocate() {
-  throw new Error("unimplemented")
+export function allocateIndex(pool, allocator, init, index, ...args) {
+  if (allocator[index]) {
+    throw new Error("member at given index is already allocated")
+  }
+  if (index >= pool.length) {
+    throw new Error("requested allocator index is out of bounds")
+  }
+  let member = pool[index]
+  allocator[index] = true
+  init(member, ...args)
+  return member
 }
 
 /**
- * free (stub)
+ * allocate a free member
  * @private
  */
-export function free() {
-  throw new Error("unimplemented")
+export function allocate(pool, allocator, init, ...args) {
+  let index = nextIndex(allocator)
+  if (index === -1) {
+    throw new Error("pool is full")
+  }
+  return allocateIndex(pool, allocator, init, index, ...args)
+}
+
+/**
+ * free member at index
+ * @private
+ */
+export function freeIndex(pool, allocator, clean, index) {
+  if (!allocator[index]) {
+    throw new Error("member was not allocated when freed")
+  }
+  clean(pool[index])
+  allocator[index] = false
+}
+
+/**
+ * free member
+ * @private
+ */
+export function free(pool, allocator, clean, member) {
+  let index = pool.indexOf(member)
+  if (index === -1) {
+    throw new Error("item is not a member of the pool")
+  }
+  freeIndex(pool, allocator, clean, index)
 }
 
 /**

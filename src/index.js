@@ -1,4 +1,4 @@
-import {nextIndex, allocate, free, isAllocated, isIndexAllocated} from "./util"
+import {nextIndex, allocate, free, freeIndex, isAllocated, isIndexAllocated} from "./util"
 const defaultCreateOpts = {
   factory: () => ({}),
   init: () => {},
@@ -12,11 +12,22 @@ function vallocFactory(pool, init, clean) {
   let valloc = {}
   let used = 0
   Object.defineProperties(valloc, {
-    next: {value: allocate.bind(undefined, pool, allocator, init, used)},
-    indexOf: {value: pool.indexOf.bind(allocator)},
+    next: {value: (...args) => {
+      let member = allocate(pool, allocator, init, ...args)
+      used++
+      return member
+    }},
+    indexOf: {value: (member) => pool.indexOf(member)},
     isAllocated: {value: isAllocated.bind(undefined, pool, allocator)},
     isIndexAllocated: {value: isIndexAllocated.bind(undefined, allocator)},
-    free: {value: free.bind(undefined, pool, allocator, clean, used)},
+    free: {value: (member) => {
+      free(pool, allocator, clean, member)
+      used--
+    }},
+    freeIndex: {value: (index) => {
+      freeIndex(pool, allocator, clean, index)
+      used--
+    }},
     nextIndex: {get: nextIndex.bind(undefined, allocator)},
     length: {get: () => allocator.length},
     available: {get: () => allocator.length - used},
@@ -34,7 +45,7 @@ export const from = (array) => {
   if (typeof array === "undefined") {
     throw new Error("valloc.from requires an array")
   }
-  return vallocFactory(array)
+  return vallocFactory(array, defaultCreateOpts.init, defaultCreateOpts.clean)
 }
 
 /**
@@ -47,9 +58,9 @@ export function create(length, opts = {}) {
   length = ~~length; // enforce integer
   const factory = opts.factory || defaultCreateOpts.factory
   const init = opts.init || defaultCreateOpts.init
-  const clean = opts.create || defaultCreateOpts.create
+  const clean = opts.clean || defaultCreateOpts.clean
   let array = new Array(length)
-  for (let i = 0; i < length; ++i) {array[i] = factory()}
+  for (let i = 0; i < length; ++i) {array[i] = factory(i)}
 
   return vallocFactory(array, init, clean)
 }
