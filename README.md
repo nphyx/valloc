@@ -1,4 +1,4 @@
-Valloc
+Valloc [![build status](https://travis-ci.org/nphyx/valloc.svg?branch=master)](https://travis-ci.org/nphyx/valloc) [![Coverage Status](https://coveralls.io/repos/github/nphyx/valloc/badge.svg?branch=master)](https://coveralls.io/github/nphyx/valloc?branch=master) [![npm (scoped)](https://img.shields.io/npm/v/@nphyx/valloc.svg)](https://www.npmjs.com/package/@nphyx/valloc)
 ======
 A fixed-size, high-performance object pool that minimizes iteration loops,
 eliminates garbage collection, automates recycling, and generally reduces
@@ -132,7 +132,7 @@ npm run lint
 
 Run unit tests (uses nyc for coverage, mocha + should for tests):
 ```
-npm run test
+npm test
 ```
 
 Generate nice html coverage reports after running tests (ends up in coverage/index.html):
